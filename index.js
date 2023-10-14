@@ -1,9 +1,10 @@
 //  index.js
-const { end, _query } = require('./connection.js');
-const inquirer = require('inquirer');
+import { end, _query } from './connection.js';
+import inquirer from 'inquirer';
+const _prompt = inquirer.prompt;
 
 function mainPrompt() {
-    inquirer.prompt([
+    _prompt([
         {
             type: 'list',
             name: 'action',

@@ -1,9 +1,10 @@
-const mysql = require('mysql2');
+// connection.js
+import mysql from "mysql2";
 const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'root', // your MySQL username
+    user: 'root',
     password: 'BKCFPV81',
     database: 'retail_db'
 });
 
-module.exports = connection;
+export default connection;
