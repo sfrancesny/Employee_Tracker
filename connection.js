@@ -1,6 +1,6 @@
 // connection.js
-import mysql from "mysql2";
-const connection = mysql.createConnection({
+import { createConnection } from "mysql2";
+const connection = createConnection({
     host: 'localhost',
     user: 'root',
     password: 'BKCFPV81',
@@ -8,4 +8,3 @@ const connection = mysql.createConnection({
 });
 
 export { connection };
-

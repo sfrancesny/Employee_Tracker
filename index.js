@@ -1,5 +1,11 @@
 //  index.js
-import { connection } from './connection.js';
+// index.js
+import { connection } from "./connection.js";
+
+function _query(sql, params, callback) {
+    connection.query(sql, params, callback);
+}
+
 import inquirer from 'inquirer';
 const _prompt = inquirer.prompt;
 
@@ -124,7 +130,7 @@ function viewEmployeesByDepartment() {
     _query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
 
-        prompt([
+        _prompt([
             // select a department
             {
                 type: 'list',
@@ -157,7 +163,7 @@ function viewEmployeesByDepartment() {
 
 // adds a Department to the table 
 function addDepartment() {
-    prompt([
+    _prompt([
         {
             type: 'input',
             name: 'departmentName',
@@ -184,7 +190,7 @@ function addRole() {
     _query('SELECT * FROM department', (error, departments) => {
         if (error) throw error;
 
-        prompt([
+        _prompt([
             {
                 type: 'input',
                 name: 'title',
@@ -224,7 +230,7 @@ function addEmployee() {
             if (err) throw err;
 
             // Prompt for employee details
-            prompt([
+            _prompt([
                 {
                     type: 'input',
                     name: 'firstName',
@@ -276,7 +282,7 @@ function updateEmployeeRole() {
     _query('SELECT * FROM employee', (err, employees) => {
         if (err) throw err;
 
-        prompt([
+        _prompt([
             // select an employee
             {
                 type: 'list',
@@ -292,7 +298,7 @@ function updateEmployeeRole() {
             _query('SELECT * FROM role', (err, roles) => {
                 if (err) throw err;
 
-                prompt([
+                _prompt([
                     // select a role
                     {
                         type: 'list',
@@ -326,7 +332,7 @@ function updateEmployeeManager() {
     _query('SELECT * FROM employee', (err, employees) => {
         if (err) throw err;
 
-        prompt([
+        _prompt([
             // select an employee
             {
                 type: 'list',
@@ -342,8 +348,8 @@ function updateEmployeeManager() {
             const managerChoices = employees.filter(emp => emp.id !== response.selectedEmployeeId)
             .map(emp => ({ name: `${emp.first_name} ${emp.last_name}`, value: emp.id }))
             .concat({ name: 'None', value: null });
-            
-            prompt([
+        
+            _prompt([
                 // select a manager
                 {
                     type: 'list',
@@ -373,7 +379,7 @@ function deleteDepartment() {
     _query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
 
-        prompt([
+        _prompt([
             {
                 type: 'list',
                 name: 'selectedDepartmentId',
@@ -399,7 +405,7 @@ function deleteRole() {
     _query('SELECT * FROM role', (err, roles) => {
         if (err) throw err;
 
-        prompt([
+        _prompt([
             {
                 type: 'list',
                 name: 'selectedRoleId',
@@ -445,7 +451,7 @@ function viewUtilizedBudget() {
     _query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
 
-        prompt([
+        _prompt([
             {
                 type: 'list',
                 name: 'departmentId',
