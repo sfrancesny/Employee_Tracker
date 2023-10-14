@@ -5,3 +5,5 @@ const connection = mysql.createConnection({
     password: 'BKCFPV81',
     database: 'retail_db'
 });
+
+module.exports = connection;
