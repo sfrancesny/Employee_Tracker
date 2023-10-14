@@ -72,9 +72,9 @@ function mainPrompt() {
             case 'View utilized budget for a department':
                 viewUtilizedBudget();
                 break;
-            case 'Exit':
-                end(); // Close the database connection
-                break;
+             case 'Exit':
+                connection.end(); // Close the database connection
+                break;    
             default:
                 console.log("Invalid action.");
                 mainPrompt();
