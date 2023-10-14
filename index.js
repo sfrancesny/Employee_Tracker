@@ -1,16 +1,9 @@
-import { prompt } from 'inquirer';
-import { createConnection } from 'mysql2';
-
-// Establishes a connection to the MySQL database
-const connection = createConnection({
-    host: 'localhost',
-    user: 'root', 
-    password: 'BKCFPV81', 
-    database: 'retail_db'
-});
+//  index.js
+const { end, _query } = require('./connection.js');
+const inquirer = require('inquirer');
 
 function mainPrompt() {
-    prompt([
+    inquirer.prompt([
         {
             type: 'list',
             name: 'action',
@@ -74,7 +67,7 @@ function mainPrompt() {
                 viewUtilizedBudget();
                 break;
             case 'Exit':
-                connection.end(); // Close the database connection
+                end(); // Close the database connection
                 break;
             default:
                 console.log("Invalid action.");
@@ -85,7 +78,7 @@ function mainPrompt() {
 
 // view all Departments in table 
 function viewAllDepartments() {
-    connection.query('SELECT * FROM department', (error, results) => {
+    _query('SELECT * FROM department', (error, results) => {
         if (error) throw error;
         console.table(results);
         mainPrompt(); // Go back to main prompt
@@ -100,7 +93,7 @@ function viewAllRoles() {
         LEFT JOIN department ON role.department_id = department.id;
     `;
 
-    connection.query(query, (error, results) => {
+    _query(query, (error, results) => {
         if (error) throw error;
         console.table(results);
         mainPrompt(); // Go back to main prompt
@@ -117,7 +110,7 @@ function viewAllEmployees() {
         LEFT JOIN employee m ON e.manager_id = m.id;
     `;
 
-    connection.query(query, (error, results) => {
+    _query(query, (error, results) => {
         if (error) throw error;
         console.table(results);
         mainPrompt();
@@ -127,7 +120,7 @@ function viewAllEmployees() {
 // view all employees by their departments 
 function viewEmployeesByDepartment() {
     // Fetch all departments
-    connection.query('SELECT * FROM department', (err, departments) => {
+    _query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
 
         prompt([
@@ -152,7 +145,7 @@ function viewEmployeesByDepartment() {
                 WHERE department.id = ?;
             `;
 
-            connection.query(query, [response.selectedDepartmentId], (err, results) => {
+            _query(query, [response.selectedDepartmentId], (err, results) => {
                 if (err) throw err;
                 console.table(results);
                 mainPrompt();
@@ -177,7 +170,7 @@ function addDepartment() {
             }
         }
     ]).then(response => {
-        connection.query('INSERT INTO department (name) VALUES (?)', [response.departmentName], (error, results) => {
+        _query('INSERT INTO department (name) VALUES (?)', [response.departmentName], (error, results) => {
             if (error) throw error;
             console.log("Department added successfully!");
             mainPrompt(); // Go back to main prompt
@@ -187,7 +180,7 @@ function addDepartment() {
 
 // adds a role to the table
 function addRole() {
-    connection.query('SELECT * FROM department', (error, departments) => {
+    _query('SELECT * FROM department', (error, departments) => {
         if (error) throw error;
 
         prompt([
@@ -210,7 +203,7 @@ function addRole() {
                 choices: departments.map(dept => ({ name: dept.name, value: dept.id }))
             }
         ]).then(response => {
-            connection.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [response.title, response.salary, response.departmentId], (error) => {
+            _query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [response.title, response.salary, response.departmentId], (error) => {
                 if (error) throw error;
                 console.log("Role added successfully!");
                 mainPrompt();
@@ -222,11 +215,11 @@ function addRole() {
 // adds an employee to the table 
 function addEmployee() {
     // Fetch all roles
-    connection.query('SELECT * FROM role', (err, roles) => {
+    _query('SELECT * FROM role', (err, roles) => {
         if (err) throw err;
 
         // Fetch all employees for selecting a manager
-        connection.query('SELECT * FROM employee', (err, employees) => {
+        _query('SELECT * FROM employee', (err, employees) => {
             if (err) throw err;
 
             // Prompt for employee details
@@ -262,7 +255,7 @@ function addEmployee() {
                     })).concat([{ name: 'None', value: null }])  // option for no manager
                 }
             ]).then(response => {
-                connection.query(
+                _query(
                     'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', 
                     [response.firstName, response.lastName, response.roleId, response.managerId], 
                     (err) => {
@@ -279,7 +272,7 @@ function addEmployee() {
 //  updates an employee's role within table 
 function updateEmployeeRole() {
     // Fetch all employees
-    connection.query('SELECT * FROM employee', (err, employees) => {
+    _query('SELECT * FROM employee', (err, employees) => {
         if (err) throw err;
 
         prompt([
@@ -295,7 +288,7 @@ function updateEmployeeRole() {
             }
         ]).then(response => {
             // Fetch all roles
-            connection.query('SELECT * FROM role', (err, roles) => {
+            _query('SELECT * FROM role', (err, roles) => {
                 if (err) throw err;
 
                 prompt([
@@ -311,7 +304,7 @@ function updateEmployeeRole() {
                     }
                 ]).then(newRoleResponse => {
                     // Update the employee's role
-                    connection.query(
+                    _query(
                         'UPDATE employee SET role_id = ? WHERE id = ?',
                         [newRoleResponse.selectedRoleId, response.selectedEmployeeId],
                         (err) => {
@@ -329,7 +322,7 @@ function updateEmployeeRole() {
 //  updates a Manager within the table 
 function updateEmployeeManager() {
     // Fetch all employees
-    connection.query('SELECT * FROM employee', (err, employees) => {
+    _query('SELECT * FROM employee', (err, employees) => {
         if (err) throw err;
 
         prompt([
@@ -359,7 +352,7 @@ function updateEmployeeManager() {
                 }
             ]).then(newManagerResponse => {
                 // updates the employee's manager
-                connection.query(
+                _query(
                     'UPDATE employee SET manager_id = ? WHERE id = ?',
                     [newManagerResponse.selectedManagerId, response.selectedEmployeeId],
                     (err) => {
@@ -376,7 +369,7 @@ function updateEmployeeManager() {
 // allows you to delete a Department from table 
 function deleteDepartment() {
     // Fetch all departments
-    connection.query('SELECT * FROM department', (err, departments) => {
+    _query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
 
         prompt([
@@ -390,7 +383,7 @@ function deleteDepartment() {
                 }))
             }
         ]).then(response => {
-            connection.query('DELETE FROM department WHERE id = ?', [response.selectedDepartmentId], (err) => {
+            _query('DELETE FROM department WHERE id = ?', [response.selectedDepartmentId], (err) => {
                 if (err) throw err;
                 console.log("Department deleted successfully!");
                 mainPrompt();
@@ -402,7 +395,7 @@ function deleteDepartment() {
 //  allows you to delete a role within the table 
 function deleteRole() {
     // Fetch all roles
-    connection.query('SELECT * FROM role', (err, roles) => {
+    _query('SELECT * FROM role', (err, roles) => {
         if (err) throw err;
 
         prompt([
@@ -416,7 +409,7 @@ function deleteRole() {
                 }))
             }
         ]).then(response => {
-            connection.query('DELETE FROM role WHERE id = ?', [response.selectedRoleId], (err) => {
+            _query('DELETE FROM role WHERE id = ?', [response.selectedRoleId], (err) => {
                 if (err) throw err;
                 console.log("Role deleted successfully!");
                 mainPrompt();
@@ -427,25 +420,19 @@ function deleteRole() {
 
 // allows you to delete an employee from the table 
 function deleteEmployee() {
-    // Fetch all employees
-    connection.query('SELECT * FROM employee', (err, employees) => {
-        if (err) throw err;
+    fetchRecordsFromTable('employee', (employees) => {
+        const employeeChoices = employees.map(emp => ({
+            name: `${emp.first_name} ${emp.last_name}`,
+            value: emp.id
+        }));
 
-        prompt([
-            {
-                type: 'list',
-                name: 'selectedEmployeeId',
-                message: 'Which employee do you want to delete?',
-                choices: employees.map(emp => ({
-                    name: `${emp.first_name} ${emp.last_name}`,
-                    value: emp.id
-                }))
-            }
-        ]).then(response => {
-            connection.query('DELETE FROM employee WHERE id = ?', [response.selectedEmployeeId], (err) => {
-                if (err) throw err;
-                console.log("Employee deleted successfully!");
-                mainPrompt();
+        promptForSelection('Which employee do you want to delete?', employeeChoices, (response) => {
+            _query('DELETE FROM employee WHERE id = ?', [response.selectedId], (err) => {
+                if (err) handleDatabaseError(err);
+                else {
+                    console.log("Employee deleted successfully!");
+                    mainPrompt();
+                }
             });
         });
     });
@@ -454,7 +441,7 @@ function deleteEmployee() {
 // allows you to view the department's budget
 function viewUtilizedBudget() {
     // First, let's prompt the user to select a department
-    connection.query('SELECT * FROM department', (err, departments) => {
+    _query('SELECT * FROM department', (err, departments) => {
         if (err) throw err;
 
         prompt([
@@ -474,7 +461,7 @@ function viewUtilizedBudget() {
                 GROUP BY department.name;
             `;
 
-            connection.query(query, [response.departmentId], (err, results) => {
+            _query(query, [response.departmentId], (err, results) => {
                 if (err) throw err;
                 
                 if (results.length > 0) {
