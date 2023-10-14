@@ -1,5 +1,4 @@
 //  index.js
-// index.js
 import { connection } from "./connection.js";
 
 function _query(sql, params, callback) {
@@ -467,7 +466,11 @@ function deleteEmployee() {
 function viewUtilizedBudget() {
     // First, let's prompt the user to select a department
     _query('SELECT * FROM department', (err, departments) => {
-        if (err) throw err;
+        if (err) {
+            console.error(err);
+            mainPrompt();
+            return;
+        }
 
         _prompt([
             {
@@ -477,20 +480,27 @@ function viewUtilizedBudget() {
                 choices: departments.map(dept => ({ name: dept.name, value: dept.id }))
             }
         ]).then(response => {
+            const selectedDepartment = departments.find(dept => dept.id === response.departmentId);
+
             const query = `
-                SELECT department.name AS Department, SUM(role.salary) AS UtilizedBudget
+                SELECT department.name AS department_name, SUM(role.salary) AS annual_budget
                 FROM employee
                 JOIN role ON employee.role_id = role.id
                 JOIN department ON role.department_id = department.id
-                WHERE department.id = ?
+                WHERE department.name = ?
                 GROUP BY department.name;
             `;
 
-            _query(query, [response.departmentId], (err, results) => {
-                if (err) throw err;
-                
+            _query(query, [selectedDepartment.name], (err, results) => {
+                if (err) {
+                    console.error(err);
+                    mainPrompt();
+                    return;
+                }
+
                 if (results.length > 0) {
-                    console.log(`Utilized budget for ${results[0].Department}: $${results[0].UtilizedBudget}`);
+                    console.clear();
+                    console.table(results);
                 } else {
                     console.log("No utilized budget available for this department.");
                 }
