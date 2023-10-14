@@ -425,6 +425,24 @@ function deleteRole() {
     });
 }
 
+function fetchRecordsFromTable(tableName, callback) {
+    _query('SELECT * FROM ??', [tableName], (err, results) => {
+        if (err) handleDatabaseError(err);
+        else callback(results);
+    });
+}
+
+function promptForSelection(message, choices, callback) {
+    _prompt([
+        {
+            type: 'list',
+            name: 'selectedId',
+            message: message,
+            choices: choices
+        }
+    ]).then(response => callback(response));
+}
+
 // allows you to delete an employee from the table 
 function deleteEmployee() {
     fetchRecordsFromTable('employee', (employees) => {
