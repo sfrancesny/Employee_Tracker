@@ -37,7 +37,7 @@ Once the application starts:
 
 
  ## Screenshots
-<img src=""/> 
+<img src="Module-12-EmployeeTrackerScreenshot.png"/> 
 
 ## Video Demo Link
-Link:
+Link: https://drive.google.com/file/d/1gWD2rZ_tZjhPmpxFosneDGWDGwfnnjgG/view
