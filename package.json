@@ -1,0 +1,19 @@
+{
+  "name": "module12-employeetracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Module12-EmployeeTracker"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^9.2.11",
+    "mysql2": "^3.6.1"
+  }
+}
