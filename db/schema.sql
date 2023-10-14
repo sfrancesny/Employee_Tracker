@@ -7,6 +7,7 @@ USE retail_db;
 CREATE TABLE department (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) NOT NULL
+    
 );
 
 CREATE TABLE role (
@@ -15,7 +16,6 @@ CREATE TABLE role (
     salary DECIMAL(10, 2) NOT NULL,
     department_id INT NULL
 );
-
 
 CREATE TABLE employee (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,5 +26,3 @@ CREATE TABLE employee (
     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE SET NULL,
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
-
-ALTER TABLE role ADD FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL;
