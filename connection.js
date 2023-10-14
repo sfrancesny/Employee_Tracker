@@ -7,4 +7,5 @@ const connection = mysql.createConnection({
     database: 'retail_db'
 });
 
-export default connection;
+export { connection };
+

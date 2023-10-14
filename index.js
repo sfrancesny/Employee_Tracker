@@ -1,5 +1,5 @@
 //  index.js
-import { end, _query } from './connection.js';
+import { connection } from './connection.js';
 import inquirer from 'inquirer';
 const _prompt = inquirer.prompt;
 
