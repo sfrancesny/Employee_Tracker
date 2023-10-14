@@ -9,7 +9,8 @@ INSERT INTO role (title, salary, department_id) VALUES
 ('Inventory Manager', 78000, 2),
 ('HR Manager', 79500, 3),
 ('Systems Analyst', 93000, 4),
-('Web Developer', 88000, 4);
+('Web Developer', 88000, 4)
+('Random User', 0, 4);
 
 -- inserts sample data into the `employee` table
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES 
@@ -19,4 +20,5 @@ INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES
 ('Zoie', 'Chavez', 3, NULL),
 ('Riley', 'Parrish', 4, NULL),
 ('Samson', 'Dennis', 5, NULL),
-('Kem', 'Mackey', 6, NULL);
+('Kem', 'Mackey', 6, NULL),
+('NO', 'NAME', 7, NULL);
